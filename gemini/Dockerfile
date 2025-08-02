@@ -1,4 +1,4 @@
-FROM mcp-base:latest
+FROM mcp_base:latest
 
 # Install docker client
 RUN set -eux; \

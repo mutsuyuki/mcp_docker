@@ -2,6 +2,13 @@
   "theme": "Default",
   "selectedAuthType": "oauth-personal",
   "mcpServers": {
+    "fetch": {
+      "command": "bash",
+      "args": [
+        "servers/fetch/run.sh"
+      ],
+      "env": {}
+    },
     "filesystem": {
       "command": "bash",
       "args": [
@@ -14,10 +21,14 @@
       "args": [
         "servers/puppeteer/run.sh"
       ],
-      "env": {
-        "PUPPETEER_LAUNCH_OPTIONS": "{\"args\": [\"--no-sandbox\"]}",
-        "ALLOW_DANGEROUS": "true"
-      }
+      "env": {}
+    },
+    "sqlite": {
+      "command": "bash",
+      "args": [
+        "servers/sqlite/run.sh"
+      ],
+      "env": {}
     }
   }
 }

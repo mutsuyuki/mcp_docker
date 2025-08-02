@@ -1,3 +1,5 @@
+#!/bin/bash
+
 SERVER_NAME=$(basename $(dirname $0))
 IMAGE_FULLNAME="mcp_${SERVER_NAME}:latest"
 CONTAINER_NAME="mcp_${SERVER_NAME}_$(date "+%Y_%m%d_%H%M%S")"
