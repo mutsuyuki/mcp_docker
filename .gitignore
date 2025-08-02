@@ -1,0 +1,8 @@
+.claude/
+.claude.json
+
+.gemini/*
+!.gemini/settings.json
+
+workspace/*
+!workspace/.gitkeep

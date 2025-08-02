@@ -1,0 +1,20 @@
+{
+  "theme": "Default",
+  "selectedAuthType": "oauth-personal",
+  "mcpServers": {
+    "filesystem": {
+      "command": "bash",
+      "args": [
+        "servers/filesystem/run.sh"
+      ],
+      "env": {}
+    },
+    "puppeteer": {
+      "command": "bash",
+      "args": [
+        "servers/puppeteer/run.sh"
+      ],
+      "env": {}
+    }
+  }
+}

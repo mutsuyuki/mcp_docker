@@ -1,0 +1,19 @@
+SERVER_NAME=$(basename $(dirname $0))
+IMAGE_FULLNAME="mcp-${SERVER_NAME}:latest"
+HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
+CONTAINER_WORKSPACE="${MCP_CONTAINER_WORKSPACE:-$(pwd)/workspace}"
+
+# build 
+docker build \
+--file $(dirname $0)/Dockerfile \
+--progress=plain \
+--tag  ${IMAGE_FULLNAME} \
+.
+
+# run
+docker run \
+--rm \
+--interactive \
+--user="$(id -u):$(id -g)" \
+--mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
+${IMAGE_FULLNAME}
