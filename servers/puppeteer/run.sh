@@ -19,7 +19,6 @@ xhost +
 docker run \
 --rm \
 --interactive \
---privileged \
 --shm-size="2g" \
 --user="$(id -u):$(id -g)" \
 --env="QT_X11_NO_MITSHM=1" \
