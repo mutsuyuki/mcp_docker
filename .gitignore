@@ -4,5 +4,5 @@
 .gemini/*
 !.gemini/settings.json
 
-workspace/*
+workspace/*  
 !workspace/.gitkeep

@@ -14,7 +14,10 @@
       "args": [
         "servers/puppeteer/run.sh"
       ],
-      "env": {}
+      "env": {
+        "PUPPETEER_LAUNCH_OPTIONS": "{\"args\": [\"--no-sandbox\"]}",
+        "ALLOW_DANGEROUS": "true"
+      }
     }
   }
 }
