@@ -1,8 +1,6 @@
-IMAGE_REPOSITORY="mcp-gemini"
-IMAGE_TAG="latest"
-IMAGE_FULLNAME="${IMAGE_REPOSITORY}:${IMAGE_TAG}"
-CONTAINER_NAME="${IMAGE_REPOSITORY}_${IMAGE_TAG}_$(date "+%Y_%m%d_%H%M%S")"
-
+SERVER_NAME=gemini
+IMAGE_FULLNAME="mcp_${SERVER_NAME}:latest"
+CONTAINER_NAME="mcp_${SERVER_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 
 # reuse running container if available 
 EXISTING_CONTAINER=$(docker ps --filter "ancestor=${IMAGE_FULLNAME}" --format "{{.Names}}" | head -n 1)
@@ -17,7 +15,7 @@ fi
 docker build \
 --progress=plain \
 --file base/Dockerfile \
---tag  mcp-base:${IMAGE_TAG} \
+--tag  mcp_base:latest \
 --build-arg USERNAME="$(whoami)" \
 --build-arg TIMEZONE="Asia/Tokyo" \
 .
