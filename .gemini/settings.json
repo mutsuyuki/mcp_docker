@@ -29,6 +29,13 @@
         "servers/sqlite/run.sh"
       ],
       "env": {}
+    },
+    "sqlite_cleaner": {
+      "command": "bash",
+      "args": [
+        "servers/sqlite_cleaner/run.sh"
+      ],
+      "env": {}
     }
   }
 }
