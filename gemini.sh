@@ -16,7 +16,6 @@ docker build \
 --progress=plain \
 --file base/Dockerfile \
 --tag  mcp_base:latest \
---build-arg USERNAME="$(whoami)" \
 --build-arg TIMEZONE="Asia/Tokyo" \
 .
 
@@ -24,6 +23,7 @@ docker build \
 docker build \
 --progress=plain \
 --file gemini/Dockerfile \
+--build-arg USERNAME="$(whoami)" \
 --tag  ${IMAGE_FULLNAME} \
 .
 

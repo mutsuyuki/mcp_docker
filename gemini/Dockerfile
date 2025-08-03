@@ -1,19 +1,28 @@
 FROM mcp_base:latest
 
-# Install docker client
-RUN set -eux; \
-    sudo apt-get update && \
-    sudo apt-get install -y --no-install-recommends ca-certificates curl && \
-    sudo install -m 0755 -d /etc/apt/keyrings && \
-    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && \
-    sudo chmod a+r /etc/apt/keyrings/docker.asc && \
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    sudo apt-get update && \
-    sudo apt-get install -y --no-install-recommends \
-        docker-ce-cli \
-        docker-buildx-plugin \
-        docker-compose-plugin && \
-    sudo rm -rf /var/lib/apt/lists/*
+# Set user name from argument
+ARG USERNAME="user"
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+# Install sudo
+RUN apt-get update && \
+    apt-get install -y \
+      sudo
+
+# Create user and set permissions
+RUN userdel -rf $(getent passwd ${USER_UID} | cut -d: -f1) 2>/dev/null || true && \
+    groupdel $(getent group ${USER_GID} | cut -d: -f1) 2>/dev/null || true && \
+    groupadd -g ${USER_GID} ${USERNAME} && \
+    useradd -m -u ${USER_UID} -g ${USER_GID} -G sudo,video,audio -s /bin/bash ${USERNAME} && \
+    echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} && \
+    chmod 0440 /etc/sudoers.d/${USERNAME} && \
+    chown -R ${USERNAME}:${USERNAME} /opt/venv
+
+# Switch to user
+USER ${USERNAME}
+WORKDIR /home/${USERNAME}
+ENV HOME=/home/$USERNAME
 
 # Install llm-agents
 RUN echo 0.1.16

@@ -2,6 +2,13 @@
   "theme": "Default",
   "selectedAuthType": "oauth-personal",
   "mcpServers": {
+    "blender": {
+      "command": "bash",
+      "args": [
+        "servers/blender/run.sh"
+      ],
+      "env": {}
+    },
     "fetch": {
       "command": "bash",
       "args": [
