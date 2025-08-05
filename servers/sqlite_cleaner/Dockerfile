@@ -22,7 +22,7 @@ RUN apt-get update && \
 RUN pip install --no-cache-dir mcp>=1.4.0
 
 # Copy the cleaner script
-COPY servers/sqlite_cleaner/cleaner.py .
+COPY cleaner.py .
 
 # Set executable permission
 RUN chmod +x cleaner.py

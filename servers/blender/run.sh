@@ -1,8 +1,9 @@
 #!/bin/bash
 
-SERVER_NAME=$(basename $(dirname $0))
-IMAGE_FULLNAME="mcp_${SERVER_NAME}:latest"
-CONTAINER_NAME="mcp_${SERVER_NAME}_$(date "+%Y_%m%d_%H%M%S")"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
+PROJECT_NAME="$(basename "$SCRIPT_DIR")"
+IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
+CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 
 # build with username argument
 docker build \
@@ -11,7 +12,7 @@ docker build \
 --build-arg USER_UID="$(id -u)" \
 --build-arg USER_GID="$(id -g)" \
 --tag  ${IMAGE_FULLNAME} \
-.
+${SCRIPT_DIR}
 
 # run with network host for TCP communication
 docker run \

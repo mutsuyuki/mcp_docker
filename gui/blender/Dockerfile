@@ -72,8 +72,8 @@ RUN cd /home/${USERNAME}/.config/blender/4.3/scripts/addons/blender_mcp && \
      curl -L -o __init__.py https://raw.githubusercontent.com/ahujasid/blender-mcp/main/addon.py)
 
 # Copy startup scripts
-COPY --chown=${USERNAME}:${USERNAME} servers/blender_gui/start_blender_gui.sh /home/${USERNAME}/
-COPY --chown=${USERNAME}:${USERNAME} servers/blender_gui/setup_blender_mcp.py /home/${USERNAME}/
+COPY --chown=${USERNAME}:${USERNAME} start_blender_gui.sh /home/${USERNAME}/
+COPY --chown=${USERNAME}:${USERNAME} setup_blender_mcp.py /home/${USERNAME}/
 RUN chmod +x /home/${USERNAME}/start_blender_gui.sh
 
 # GUI環境設定 + OpenGL互換設定

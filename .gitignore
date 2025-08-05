@@ -6,3 +6,5 @@
 
 workspace/*  
 !workspace/.gitkeep
+
+figma/windows/

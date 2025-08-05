@@ -1,6 +1,6 @@
-SERVER_NAME=gemini
-IMAGE_FULLNAME="mcp_${SERVER_NAME}:latest"
-CONTAINER_NAME="mcp_${SERVER_NAME}_$(date "+%Y_%m%d_%H%M%S")"
+PROJECT_NAME=gemini
+IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
+CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 
 # reuse running container if available 
 EXISTING_CONTAINER=$(docker ps --filter "ancestor=${IMAGE_FULLNAME}" --format "{{.Names}}" | head -n 1)

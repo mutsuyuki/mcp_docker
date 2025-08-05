@@ -1,8 +1,9 @@
 #!/bin/bash
 
-SERVER_NAME=$(basename $(dirname $0))
-IMAGE_FULLNAME="mcp_${SERVER_NAME}:latest"
-CONTAINER_NAME="mcp_${SERVER_NAME}_$(date "+%Y_%m%d_%H%M%S")"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
+PROJECT_NAME="$(basename "$SCRIPT_DIR")"
+IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
+CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
 CONTAINER_WORKSPACE="${MCP_CONTAINER_WORKSPACE:-$(pwd)/workspace}"
 
@@ -11,7 +12,7 @@ docker build \
 --file $(dirname $0)/Dockerfile \
 --progress=plain \
 --tag  ${IMAGE_FULLNAME} \
-.
+${SCRIPT_DIR}
 
 # run
 docker run \
