@@ -7,4 +7,4 @@
 workspace/*  
 !workspace/.gitkeep
 
-figma/windows/
+gui/figma/windows/*

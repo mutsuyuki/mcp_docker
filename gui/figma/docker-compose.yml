@@ -1,0 +1,43 @@
+services:
+  win11:
+    image: ${IMAGE_FULLNAME_WIN}
+    container_name: ${CONTAINER_NAME_WIN}
+    build:
+      context: .
+      dockerfile: mcp_win.Dockerfile
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - "8006:8006"      # noVNC
+      - "3389:3389"      # RDP
+    volumes:
+      - ./windows:/storage
+    environment:
+      CPU_CORES: 4
+      RAM_SIZE: 8G
+      DISK_SIZE: 64G
+    shm_size: "2g"
+
+  rdp:
+    image: ${IMAGE_FULLNAME_RDP}
+    container_name: ${CONTAINER_NAME_RDP}
+    build:
+      context: .
+      dockerfile: mcp_rdp.Dockerfile
+    depends_on:
+      - win11
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY}
+      - RDP_SERVER=127.0.0.1:3389
+      - RDP_USER=Docker
+      - RDP_PASS=admin
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:ro   # X ソケット
+      - ${XDG_RUNTIME_DIR}/pulse:${XDG_RUNTIME_DIR}/pulse  # 音声
+    shm_size: "256m"
+
