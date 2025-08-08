@@ -25,6 +25,9 @@ docker run \
 --rm \
 --interactive \
 --tty \
+--gpus all \
+--env="NVIDIA_VISIBLE_DEVICES=all" \
+--env="NVIDIA_DRIVER_CAPABILITIES=graphics,utility" \
 --net=host \
 --user="$(id -u):$(id -g)" \
 --shm-size="2g" \

@@ -14,4 +14,4 @@ ENV RDP_SERVER="127.0.0.1:3389" \
     RDP_USER="Docker" \
     RDP_PASS="admin"
 
-ENTRYPOINT sh -c "xfreerdp /v:${RDP_SERVER} /u:${RDP_USER} /p:${RDP_PASS} /dynamic-resolution +clipboard /cert:ignore"
+ENTRYPOINT sh -c "xfreerdp /v:${RDP_SERVER} /u:${RDP_USER} /p:${RDP_PASS} /size:1920x1080 /dynamic-resolution +clipboard /cert:ignore"

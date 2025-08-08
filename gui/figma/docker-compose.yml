@@ -4,7 +4,7 @@ services:
     container_name: ${CONTAINER_NAME_WIN}
     build:
       context: .
-      dockerfile: mcp_win.Dockerfile
+      dockerfile: _win.Dockerfile
     devices:
       - /dev/kvm
       - /dev/net/tun
@@ -15,10 +15,11 @@ services:
       - "3389:3389"      # RDP
     volumes:
       - ./windows:/storage
+      - ./shared:/data
     environment:
       CPU_CORES: 4
       RAM_SIZE: 8G
-      DISK_SIZE: 64G
+      DISK_SIZE: 32G
     shm_size: "2g"
 
   rdp:
@@ -26,7 +27,7 @@ services:
     container_name: ${CONTAINER_NAME_RDP}
     build:
       context: .
-      dockerfile: mcp_rdp.Dockerfile
+      dockerfile: _rdp.Dockerfile
     depends_on:
       - win11
     network_mode: host

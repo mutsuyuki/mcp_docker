@@ -25,5 +25,5 @@ WORKDIR /home/${USERNAME}
 ENV HOME=/home/$USERNAME
 
 # Install llm-agents
-RUN echo 0.1.16
-RUN sudo npm install -g @google/gemini-cli
+RUN GEMINI_VERSION=0.1.18
+RUN sudo npm install -g @google/gemini-cli@${GEMINI_VERSION}

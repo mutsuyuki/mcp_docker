@@ -13,4 +13,10 @@ export CONTAINER_NAME_RDP="mcp_${PROJECT_NAME}_rdp_${TIMESTAMP}"
 
 xhost +
 
+WIN_IMG="${SCRIPT_DIR}/windows/data.img"
+if [[ ! -f "$WIN_IMG" ]]; then
+  echo "Open vnc display to monitor installation." >&2
+  sensible-browser "http://127.0.0.1:8006/" >/dev/null 2>&1 &
+fi
+
 docker compose up  --build
