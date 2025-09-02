@@ -14,6 +14,12 @@ docker build \
 --tag  ${IMAGE_FULLNAME} \
 ${SCRIPT_DIR}
 
+# If the first argument is --build-only, exit after building.
+if [ "$1" = "--build-only" ]; then
+    echo "Build finished. Exiting without running the container."
+    exit 0
+fi
+
 # allow display connection for GUI
 xhost +
 

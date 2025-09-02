@@ -57,8 +57,13 @@ def cleanup_sqlite_containers():
     except Exception as e:
         logging.error(f"Cleanup error: {e}")
 
-# 空機能のMCPサーバー作成（lifespanなし）
+# MCPサーバー作成（lifespanなし）
 mcp = FastMCP("sqlite_cleaner")
+
+@mcp.tool()
+def status() -> str:
+    """Check the status of the SQLite cleaner service"""
+    return "SQLite cleaner is running and ready to cleanup containers on exit"
 
 def main():
     """エントリーポイント"""

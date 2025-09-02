@@ -19,13 +19,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install MCP dependencies
-RUN pip install --no-cache-dir mcp>=1.4.0
+RUN pip install --no-cache-dir mcp~=1.12
 
 # Copy the cleaner script
 COPY cleaner.py .
-
-# Set executable permission
-RUN chmod +x cleaner.py
 
 # Run the cleaner using FastMCP
 CMD ["python", "cleaner.py"]

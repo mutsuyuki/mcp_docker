@@ -32,7 +32,9 @@ RUN apt-get update && \
       tmux \
       x11-apps \
       rsync \
-      tree 
+      tree \
+      unzip \
+      jq
 
 # Japanese environment 
 ENV LANGUAGE=ja_JP.UTF-8
