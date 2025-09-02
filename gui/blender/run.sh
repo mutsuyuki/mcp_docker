@@ -25,20 +25,27 @@ docker run \
 --rm \
 --interactive \
 --tty \
---gpus all \
---env="NVIDIA_VISIBLE_DEVICES=all" \
---env="NVIDIA_DRIVER_CAPABILITIES=graphics,utility" \
---net=host \
 --user="$(id -u):$(id -g)" \
+\
+--gpus=all \
+--net=host \
 --shm-size="2g" \
+\
+--env="NVIDIA_VISIBLE_DEVICES=all" \
+--env="NVIDIA_DRIVER_CAPABILITIES=all" \
+--env="__GLX_VENDOR_LIBRARY_NAME=nvidia" \
 --env="QT_X11_NO_MITSHM=1" \
 --env="DISPLAY=${DISPLAY}" \
 --env="WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" \
 --env="XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}" \
 --env="PULSE_SERVER=${PULSE_SERVER}" \
+\
 --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
 --mount="type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix,readonly" \
 --mount="type=bind,src=${XDG_RUNTIME_DIR}/pulse,dst=${XDG_RUNTIME_DIR}/pulse" \
+\
+--workdir="${HOME}/share" \
+\
 --name=${CONTAINER_NAME} \
 ${IMAGE_FULLNAME}
 

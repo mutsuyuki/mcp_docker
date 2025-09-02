@@ -11,6 +11,8 @@ if [ -n "${EXISTING_CONTAINER}" ]; then
     exit 0
 fi
 
+bash prepare.sh
+
 # mcp client image build 
 docker build \
 --progress=plain \

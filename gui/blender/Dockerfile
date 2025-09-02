@@ -55,13 +55,6 @@ COPY --chown=${USERNAME}:${USERNAME} start_blender_gui.sh /home/${USERNAME}/
 COPY --chown=${USERNAME}:${USERNAME} setup_blender_mcp.py /home/${USERNAME}/
 RUN chmod +x /home/${USERNAME}/start_blender_gui.sh
 
-# GUI環境設定 + OpenGL互換設定
-ENV DISPLAY=:0
-ENV QT_X11_NO_MITSHM=1
-ENV MESA_GL_VERSION_OVERRIDE=4.3
-ENV MESA_GLSL_VERSION_OVERRIDE=430
-ENV LIBGL_ALWAYS_SOFTWARE=1
 
 ENV USERNAME=${USERNAME}
-WORKDIR /home/${USERNAME}
 CMD ["/bin/bash", "-c", "/home/$USERNAME/start_blender_gui.sh"]
