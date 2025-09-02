@@ -11,14 +11,6 @@ if [ -n "${EXISTING_CONTAINER}" ]; then
     exit 0
 fi
 
-# base image build 
-docker build \
---progress=plain \
---file base/Dockerfile \
---tag  mcp_base:latest \
---build-arg TIMEZONE="Asia/Tokyo" \
-.
-
 # mcp client image build 
 docker build \
 --progress=plain \

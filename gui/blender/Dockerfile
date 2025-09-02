@@ -1,30 +1,6 @@
 FROM mcp_base:latest
 
-# Set user name from argument
-ARG USERNAME="user"
-ARG USER_UID=1000
-ARG USER_GID=1000
-
-# Install sudo
-RUN apt-get update && \
-    apt-get install -y \
-      sudo
-
-# Create user and set permissions
-RUN userdel -rf $(getent passwd ${USER_UID} | cut -d: -f1) 2>/dev/null || true && \
-    groupdel $(getent group ${USER_GID} | cut -d: -f1) 2>/dev/null || true && \
-    groupadd -g ${USER_GID} ${USERNAME} && \
-    useradd -m -u ${USER_UID} -g ${USER_GID} -G sudo,video,audio -s /bin/bash ${USERNAME} && \
-    echo "${USERNAME} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${USERNAME} && \
-    chmod 0440 /etc/sudoers.d/${USERNAME} && \
-    chown -R ${USERNAME}:${USERNAME} /opt/venv
-
-# Switch to user
-USER ${USERNAME}
-WORKDIR /home/${USERNAME}
-ENV HOME=/home/$USERNAME
-
-# Install Blender dependencies for GUI + ソフトウェアレンダリング対応
+# Install Blender dependencies for GUI
 RUN sudo apt-get update && \
     sudo apt-get install -y \
         libxrender1 \
@@ -61,6 +37,9 @@ RUN cd /tmp && \
     sudo mv /opt/blender-* /opt/blender && \
     sudo ln -s /opt/blender/blender /usr/local/bin/blender && \
     rm blender.tar.xz
+
+
+ARG USERNAME="user"
 
 # Create addon directory structure
 RUN mkdir -p /home/${USERNAME}/.config/blender/4.3/scripts/addons/blender_mcp
