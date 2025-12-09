@@ -26,3 +26,5 @@ RUN apt update && \
         libgdk-pixbuf2.0-0 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+ENTRYPOINT ["node", "/project/dist/index.js"]
