@@ -3,7 +3,7 @@ IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
 CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 
 # reuse running container if available 
-EXISTING_CONTAINER=$(docker ps --filter "ancestor=${IMAGE_FULLNAME}" --format "{{.Names}}" | head -n 1)
+EXISTING_CONTAINER=$(docker ps --format "{{.Image}} {{.Names}}" | grep "^${IMAGE_FULLNAME} " | awk '{print $2}' | head -n 1)
 if [ -n "${EXISTING_CONTAINER}" ]; then
     echo "--- Found running container [${EXISTING_CONTAINER}].  ---"
     xhost +

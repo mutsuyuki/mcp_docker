@@ -1,6 +1,4 @@
 {
-  "theme": "Default",
-  "selectedAuthType": "oauth-personal",
   "mcpServers": {
     "blender": {
       "command": "bash",
@@ -43,6 +41,32 @@
         "servers/sqlite_cleaner/run.sh"
       ],
       "env": {}
+    },
+    "excel": {
+      "command": "bash",
+      "args": [
+        "servers/excel/run.sh"
+      ],
+      "env": {}
+    },
+    "word": {
+      "command": "bash",
+      "args": [
+        "servers/word/run.sh"
+      ],
+      "env": {}
     }
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "ui": {
+    "theme": "Default",
+    "showModelInfoInChat": true
+  },
+  "general": {
+    "previewFeatures": true
   }
 }
