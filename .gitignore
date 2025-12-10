@@ -1,6 +1,7 @@
 .claude/
 .claude.json
 
+.gemini.env
 .gemini/*
 !.gemini/settings.json
 

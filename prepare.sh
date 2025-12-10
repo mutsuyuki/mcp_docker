@@ -17,3 +17,4 @@ bash servers/sqlite/run.sh --build-only
 bash servers/sqlite_cleaner/run.sh --build-only
 bash servers/excel/run.sh --build-only
 bash servers/word/run.sh --build-only
+bash servers/rag/run.sh --build-only

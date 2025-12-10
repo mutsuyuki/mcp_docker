@@ -55,6 +55,13 @@
         "servers/word/run.sh"
       ],
       "env": {}
+    },
+    "rag": {
+      "command": "bash",
+      "args": [
+        "servers/rag/run.sh"
+      ],
+      "env": {}
     }
   },
   "security": {

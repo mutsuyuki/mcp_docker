@@ -7,6 +7,15 @@ CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
+# .gemini.env のパスを特定
+ENV_FILE="${SCRIPT_DIR}/../../.gemini.env"
+
+if [ ! -f "${ENV_FILE}" ]; then
+    echo "❌ Error: Configuration file not found at ${ENV_FILE}"
+    echo "Please create .gemini.env in the project root."
+    exit 1
+fi
+
 # build 
 docker build \
 --file $(dirname $0)/Dockerfile \
@@ -14,16 +23,22 @@ docker build \
 --tag  ${IMAGE_FULLNAME} \
 ${SCRIPT_DIR}
 
-# If the first argument is --build-only, exit after building.
 if [ "$1" = "--build-only" ]; then
     echo "Build finished. Exiting without running the container."
     exit 0
 fi
 
+# DB保存先の確保
+echo "🔧 Setting up RAG database directory at ${HOST_WORKSPACE}/rag_db..."
+mkdir -p "${HOST_WORKSPACE}/rag_db"
+chmod -R 755 "${HOST_WORKSPACE}/rag_db"
+
 # run
 docker run \
 --rm \
 --interactive \
+--user="$(id -u):$(id -g)" \
+--env-file "${ENV_FILE}" \
 --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
 --workdir="${CONTAINER_WORKSPACE}" \
 --name=${CONTAINER_NAME} \

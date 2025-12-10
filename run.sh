@@ -47,7 +47,6 @@ $(for i in $(id -G); do echo -n --group-add="${i} "; done) \
 --env="PULSE_SERVER=${PULSE_SERVER}" \
 --env="NVIDIA_DRIVER_CAPABILITIES=all" \
 --env="MCP_HOST_WORKSPACE=$(pwd)/workspace" \
---env="MCP_CONTAINER_WORKSPACE=${HOME}/share/workspace" \
 \
 --mount="type=bind,src=$(pwd),dst=${HOME}/share" \
 --mount="type=bind,src=$(pwd)/.gemini,dst=${HOME}/.gemini" \

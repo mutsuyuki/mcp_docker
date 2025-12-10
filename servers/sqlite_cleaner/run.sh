@@ -5,7 +5,7 @@ PROJECT_NAME="$(basename "$SCRIPT_DIR")"
 IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
 CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
-CONTAINER_WORKSPACE="${MCP_CONTAINER_WORKSPACE:-$(pwd)/workspace}"
+CONTAINER_WORKSPACE="/workspace"
 
 # build 
 docker build \

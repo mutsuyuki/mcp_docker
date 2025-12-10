@@ -2,7 +2,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Install Docker CLI for container management
+# Install Docker CLI
 RUN apt-get update && \
     apt-get install -y \
         ca-certificates \
@@ -21,8 +21,8 @@ RUN apt-get update && \
 # Install MCP dependencies
 RUN pip install --no-cache-dir mcp~=1.12
 
-# Copy the cleaner script
+# Copy the cleaner script to /app/cleaner.py
 COPY cleaner.py .
 
-# Run the cleaner using FastMCP
-CMD ["python", "cleaner.py"]
+# Run using absolute path
+CMD ["python", "/app/cleaner.py"]
