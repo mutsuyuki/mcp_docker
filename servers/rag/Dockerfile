@@ -16,7 +16,11 @@ RUN pip install --no-cache-dir \
     chromadb \
     pypdf \
     python-docx \
+    docx2txt \
     openpyxl \
+    xlrd \
+    pandas \
+    markdown \
     unstructured \
     google-generativeai
 

@@ -33,6 +33,7 @@ RUN apt-get update && \
       x11-apps \
       rsync \
       tree \
+      zip \
       unzip \
       jq
 
