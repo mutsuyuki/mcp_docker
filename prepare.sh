@@ -5,6 +5,8 @@ docker build \
 --build-arg BASE_IMAGE="nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04" \
 --build-arg TIMEZONE="Asia/Tokyo" \
 --build-arg USERNAME="$(whoami)" \
+--build-arg USER_UID="$(id -u)" \
+--build-arg USER_GID="$(id -g)" \
 --tag  mcp_base:latest \
 .
 
