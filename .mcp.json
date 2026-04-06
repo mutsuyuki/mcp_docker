@@ -62,6 +62,14 @@
         "servers/rag/run.sh"
       ],
       "env": {}
+    },
+    "unity": {
+      "command": "bash",
+      "args": [
+        "servers/unity/run.sh",
+        "--mcp"
+      ],
+      "env": {}
     }
   }
 }

@@ -59,6 +59,7 @@ DOCKER_RUN_OPTS=(
     --env="PULSE_SERVER=${PULSE_SERVER}"
     --env="COLORTERM=truecolor"
     --env-file="$(pwd)/.env"
+    --env="MCP_HOST_HOME=${HOME}"
     --env="MCP_HOST_WORKSPACE=$(pwd)/workspace"
     --mount="type=bind,src=$(pwd),dst=${HOME}/share"
     --mount="type=bind,src=$(pwd)/.gemini,dst=${HOME}/.gemini"
