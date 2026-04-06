@@ -1,7 +1,7 @@
 #!/bin/bash
 
 HOST_OS_TYPE=$(uname -s)
-IMAGE_REPOSITORY="mcp_gemini"
+IMAGE_REPOSITORY="mcp_clients"
 IMAGE_TAG="latest"
 IMAGE_FULLNAME="${IMAGE_REPOSITORY}:${IMAGE_TAG}"
 CONTAINER_NAME="${IMAGE_REPOSITORY}_$(date "+%Y_%m%d_%H%M%S")"
@@ -21,7 +21,7 @@ bash prepare.sh
 # mcp client image build 
 docker build \
     --progress=plain \
-    --file gemini/Dockerfile \
+    --file clients/Dockerfile \
     --build-arg USERNAME="$(whoami)" \
     --tag "${IMAGE_FULLNAME}" \
     .
@@ -29,10 +29,23 @@ docker build \
 # --- 3. ホスト側のディレクトリ・ファイル準備 ---
 touch "$(pwd)/.env"
 mkdir -p "$(pwd)/.gemini"
+mkdir -p "$(pwd)/.claude"
+touch "$(pwd)/.claude.json"
+mkdir -p "$(pwd)/.codex"
 
 if command -v xhost >/dev/null 2>&1; then xhost +; fi
 
-# --- 4. 実行オプションの構築（共通部分） ---
+# --- 4. MCP設定の同期 (.mcp.json -> .gemini/settings.json) ---
+if [ -f "$(pwd)/.mcp.json" ]; then
+    if [ ! -f "$(pwd)/.gemini/settings.json" ]; then
+        echo "{}" > "$(pwd)/.gemini/settings.json"
+    fi
+    # jqで.mcp.jsonのmcpServersをsettings.jsonにマージする
+    jq -s '.[0] * .[1]' "$(pwd)/.gemini/settings.json" "$(pwd)/.mcp.json" > "$(pwd)/.gemini/settings.tmp.json" && \
+    mv "$(pwd)/.gemini/settings.tmp.json" "$(pwd)/.gemini/settings.json"
+fi
+
+# --- 5. 実行オプションの構築（共通部分） ---
 DOCKER_RUN_OPTS=(
     --interactive
     --tty
@@ -49,13 +62,16 @@ DOCKER_RUN_OPTS=(
     --env="MCP_HOST_WORKSPACE=$(pwd)/workspace"
     --mount="type=bind,src=$(pwd),dst=${HOME}/share"
     --mount="type=bind,src=$(pwd)/.gemini,dst=${HOME}/.gemini"
+    --mount="type=bind,src=$(pwd)/.claude,dst=${HOME}/.claude"
+    --mount="type=bind,src=$(pwd)/.claude.json,dst=${HOME}/.claude.json"
+    --mount="type=bind,src=$(pwd)/.codex,dst=${HOME}/.codex"
     --mount="type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock"
     --privileged
     --workdir="${HOME}/share"
     --name="${CONTAINER_NAME}"
 )
 
-# --- 5. 条件分岐によるオプションの追加 ---
+# --- 6. 条件分岐によるオプションの追加 ---
 
 # Linux固有のオプション（グループ追加、GPUパススルー）
 if [ "${HOST_OS_TYPE}" = "Linux" ]; then
@@ -108,7 +124,7 @@ if [ -e "/var/run/avahi-daemon/socket" ]; then
     )
 fi
 
-# --- 6. コンテナの起動 ---
+# --- 7. コンテナの起動 ---
 docker run "${DOCKER_RUN_OPTS[@]}" "${IMAGE_FULLNAME}" \
 sh -c "
 echo ------- run --------- ;

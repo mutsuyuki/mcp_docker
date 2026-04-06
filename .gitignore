@@ -1,5 +1,4 @@
 .gemini/
-!.gemini/settings.json
 .claude/
 .claude.json
 .codex/
