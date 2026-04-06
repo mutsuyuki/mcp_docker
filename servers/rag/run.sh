@@ -7,12 +7,12 @@ CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
-# .gemini.env のパスを特定
-ENV_FILE="${SCRIPT_DIR}/../../.gemini.env"
+# .env のパスを特定
+ENV_FILE="${SCRIPT_DIR}/../../.env"
 
 if [ ! -f "${ENV_FILE}" ]; then
     echo "❌ Error: Configuration file not found at ${ENV_FILE}"
-    echo "Please create .gemini.env in the project root."
+    echo "Please create .env in the project root."
     exit 1
 fi
 
