@@ -1,9 +1,10 @@
+.gemini/
+!.gemini/settings.json
 .claude/
 .claude.json
+.codex/
 
-.gemini.env
-.gemini/*
-!.gemini/settings.json
+.env
 
 workspace/*  
 !workspace/.gitkeep
