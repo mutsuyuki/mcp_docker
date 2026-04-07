@@ -1,8 +1,10 @@
 FROM mcp_base:latest
 
-# Install Blender dependencies for GUI
+# Blender GUI に必要な追加パッケージ
 RUN sudo apt-get update && \
     sudo apt-get install -y \
+        netcat-openbsd \
+        # X11 / GUI関連
         libxrender1 \
         libxrandr2 \
         libxss1 \
@@ -15,8 +17,7 @@ RUN sudo apt-get update && \
         libgtk-3-0 \
         libgdk-pixbuf2.0-0 \
         libxdamage1 \
-        wget \
-        netcat-openbsd \
+        # OpenGL / Mesa
         mesa-utils \
         libgl1-mesa-dev \
         libglu1-mesa \
@@ -30,7 +31,7 @@ RUN sudo apt-get update && \
     sudo apt-get clean && \
     sudo rm -rf /var/lib/apt/lists/*
 
-# Install Blender (4.3.2)
+# Blender 4.3.2 インストール
 RUN cd /tmp && \
     wget -O blender.tar.xz "https://download.blender.org/release/Blender4.3/blender-4.3.2-linux-x64.tar.xz" && \
     sudo tar -xJf blender.tar.xz -C /opt && \
@@ -38,23 +39,18 @@ RUN cd /tmp && \
     sudo ln -s /opt/blender/blender /usr/local/bin/blender && \
     rm blender.tar.xz
 
-
 ARG USERNAME="user"
 
-# Create addon directory structure
-RUN mkdir -p /home/${USERNAME}/.config/blender/4.3/scripts/addons/blender_mcp
-
-# Download and setup Blender MCP addon
-RUN cd /home/${USERNAME}/.config/blender/4.3/scripts/addons/blender_mcp && \
+# Blender MCP アドオンのセットアップ
+RUN mkdir -p /home/${USERNAME}/.config/blender/4.3/scripts/addons/blender_mcp && \
+    cd /home/${USERNAME}/.config/blender/4.3/scripts/addons/blender_mcp && \
     (wget -O __init__.py https://raw.githubusercontent.com/ahujasid/blender-mcp/main/addon.py || \
-     wget -O __init__.py https://github.com/ahujasid/blender-mcp/raw/main/addon.py || \
      curl -L -o __init__.py https://raw.githubusercontent.com/ahujasid/blender-mcp/main/addon.py)
 
-# Copy startup scripts
+# 起動スクリプト
 COPY --chown=${USERNAME}:${USERNAME} start_blender_gui.sh /home/${USERNAME}/
 COPY --chown=${USERNAME}:${USERNAME} setup_blender_mcp.py /home/${USERNAME}/
 RUN chmod +x /home/${USERNAME}/start_blender_gui.sh
-
 
 ENV USERNAME=${USERNAME}
 CMD ["/bin/bash", "-c", "/home/$USERNAME/start_blender_gui.sh"]

@@ -2,7 +2,7 @@
 docker build \
 --progress=plain \
 --file base/Dockerfile \
---build-arg BASE_IMAGE="nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04" \
+--build-arg BASE_IMAGE="ubuntu:24.04" \
 --build-arg TIMEZONE="Asia/Tokyo" \
 --build-arg USERNAME="$(whoami)" \
 --build-arg USER_UID="$(id -u)" \

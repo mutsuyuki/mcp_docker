@@ -27,7 +27,7 @@ if [ -z "$MCP_HOST_HOME" ]; then
 fi
 
 # Path to the Unity MCP Relay binary on the host
-RELAY_BIN="${MCP_HOST_HOME}/.unity/relay/unity-mcp-relay"
+RELAY_BIN="${MCP_HOST_HOME}/.unity/relay/relay_linux"
 
 # Build docker run options
 DOCKER_RUN_OPTS=(
