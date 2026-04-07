@@ -9,12 +9,13 @@ CONTAINER_WORKSPACE="/workspace"
 
 # build with username argument
 docker build \
+--file "${SCRIPT_DIR}/Dockerfile" \
 --progress=plain \
 --build-arg USERNAME="$(whoami)" \
 --build-arg USER_UID="$(id -u)" \
 --build-arg USER_GID="$(id -g)" \
---tag  ${IMAGE_FULLNAME} \
-${SCRIPT_DIR}
+--tag "${IMAGE_FULLNAME}" \
+"${SCRIPT_DIR}"
 
 # If the first argument is --build-only, exit after building.
 if [ "$1" = "--build-only" ]; then
@@ -30,5 +31,5 @@ docker run \
 --user="$(id -u):$(id -g)" \
 --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
 --workdir="${CONTAINER_WORKSPACE}" \
---name=${CONTAINER_NAME} \
-${IMAGE_FULLNAME}
+--name="${CONTAINER_NAME}" \
+"${IMAGE_FULLNAME}"

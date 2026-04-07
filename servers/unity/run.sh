@@ -7,12 +7,12 @@ CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
-# build 
+# build
 docker build \
---file $(dirname $0)/Dockerfile \
+--file "${SCRIPT_DIR}/Dockerfile" \
 --progress=plain \
---tag  ${IMAGE_FULLNAME} \
-${SCRIPT_DIR}
+--tag "${IMAGE_FULLNAME}" \
+"${SCRIPT_DIR}"
 
 # If the first argument is --build-only, exit after building.
 if [ "$1" = "--build-only" ]; then
@@ -68,5 +68,5 @@ DOCKER_RUN_OPTS+=(
 
 # run
 docker run "${DOCKER_RUN_OPTS[@]}" \
-${IMAGE_FULLNAME} \
+"${IMAGE_FULLNAME}" \
 "$RELAY_BIN" "$@"

@@ -11,7 +11,7 @@ check_port() {
 start_blender_gui() {
     echo "🖼️ Starting Blender with GUI and MCP addon..."
     
-    # BlenderをPython付きで起動（OpenGL互換モード）
+    # Start Blender with Python and auto-exec enabled
     blender \
         --enable-autoexec \
         --python-use-system-env \

@@ -6,7 +6,7 @@ IMAGE_TAG="latest"
 IMAGE_FULLNAME="${IMAGE_REPOSITORY}:${IMAGE_TAG}"
 CONTAINER_NAME="${IMAGE_REPOSITORY}_$(date "+%Y_%m%d_%H%M%S")"
 
-# --- 1. 既存コンテナの再利用 ---
+# --- 1. Reuse existing container ---
 EXISTING_CONTAINER=$(docker ps --format "{{.Image}} {{.Names}}" | grep "^${IMAGE_FULLNAME} " | awk '{print $2}' | head -n 1)
 if [ -n "${EXISTING_CONTAINER}" ]; then
     echo "--- Found running container [${EXISTING_CONTAINER}].  ---"
@@ -15,10 +15,9 @@ if [ -n "${EXISTING_CONTAINER}" ]; then
     exit 0
 fi
 
-# --- 2. イメージの準備 ---
+# --- 2. Build images ---
 bash prepare.sh
 
-# mcp client image build 
 docker build \
     --progress=plain \
     --file clients/Dockerfile \
@@ -26,7 +25,7 @@ docker build \
     --tag "${IMAGE_FULLNAME}" \
     .
 
-# --- 3. ホスト側のディレクトリ・ファイル準備 ---
+# --- 3. Prepare host directories and files ---
 touch "$(pwd)/.env"
 mkdir -p "$(pwd)/.gemini"
 mkdir -p "$(pwd)/.claude"
@@ -35,17 +34,17 @@ mkdir -p "$(pwd)/.codex"
 
 if command -v xhost >/dev/null 2>&1; then xhost +; fi
 
-# --- 4. MCP設定の同期 (.mcp.json -> .gemini/settings.json) ---
+# --- 4. Sync MCP config (.mcp.json -> .gemini/settings.json) ---
 if [ -f "$(pwd)/.mcp.json" ]; then
     if [ ! -f "$(pwd)/.gemini/settings.json" ]; then
         echo "{}" > "$(pwd)/.gemini/settings.json"
     fi
-    # jqで.mcp.jsonのmcpServersをsettings.jsonにマージする
+    # Merge mcpServers from .mcp.json into settings.json
     jq -s '.[0] * .[1]' "$(pwd)/.gemini/settings.json" "$(pwd)/.mcp.json" > "$(pwd)/.gemini/settings.tmp.json" && \
     mv "$(pwd)/.gemini/settings.tmp.json" "$(pwd)/.gemini/settings.json"
 fi
 
-# --- 5. 実行オプションの構築（共通部分） ---
+# --- 5. Build docker run options (common) ---
 DOCKER_RUN_OPTS=(
     --interactive
     --tty
@@ -72,24 +71,24 @@ DOCKER_RUN_OPTS=(
     --name="${CONTAINER_NAME}"
 )
 
-# --- 6. 条件分岐によるオプションの追加 ---
+# --- 6. Conditional options ---
 
-# Linux固有のオプション（グループ追加、GPUパススルー）
+# Linux-specific options (group inheritance, GPU passthrough)
 if [ "${HOST_OS_TYPE}" = "Linux" ]; then
-    # ホスト側の所属グループをコンテナにも引き継ぐ
+    # Inherit host group memberships
     for i in $(id -G); do
         DOCKER_RUN_OPTS+=(--group-add="${i}")
     done
 
-    # GPUの自動判定
+    # Auto-detect GPU
     if lspci 2>/dev/null | grep -qi "nvidia"; then
-        # Nvidia のGPUの場合
+        # NVIDIA GPU
         DOCKER_RUN_OPTS+=(
             --gpus="all" 
             --env="NVIDIA_DRIVER_CAPABILITIES=all"
         )
     elif lspci 2>/dev/null | grep -qi "amd\|radeon"; then
-        # AMD のGPUの場合
+        # AMD GPU
         RENDER_GID=$(stat -c "%g" /dev/kfd 2>/dev/null || echo "video")
         DOCKER_RUN_OPTS+=(
             --device="/dev/kfd"
@@ -101,7 +100,7 @@ if [ "${HOST_OS_TYPE}" = "Linux" ]; then
     fi
 fi
 
-# 存在する場合のみマウントするファイル群（LinuxのGUI / オーディオ等）
+# Conditionally mount files (X11 / audio etc.)
 if [ -e "/tmp/.X11-unix" ]; then
     DOCKER_RUN_OPTS+=(
         --mount="type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix,readonly"
@@ -118,14 +117,14 @@ if [ -e "${HOME}/.Xauthority" ]; then
     )
 fi
 
-# mDNS (.local) 名前解決用（ホストの avahi-daemon ソケットを共有）
+# mDNS (.local) resolution via host avahi-daemon socket
 if [ -e "/var/run/avahi-daemon/socket" ]; then
     DOCKER_RUN_OPTS+=(
         --mount="type=bind,src=/var/run/avahi-daemon/socket,dst=/var/run/avahi-daemon/socket"
     )
 fi
 
-# --- 7. コンテナの起動 ---
+# --- 7. Run container ---
 docker run "${DOCKER_RUN_OPTS[@]}" "${IMAGE_FULLNAME}" \
 sh -c "
 echo ------- run --------- ;

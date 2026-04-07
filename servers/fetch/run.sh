@@ -7,12 +7,12 @@ CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
-# build 
+# build
 docker build \
---file $(dirname $0)/Dockerfile \
+--file "${SCRIPT_DIR}/Dockerfile" \
 --progress=plain \
---tag  ${IMAGE_FULLNAME} \
-${SCRIPT_DIR}
+--tag "${IMAGE_FULLNAME}" \
+"${SCRIPT_DIR}"
 
 # If the first argument is --build-only, exit after building.
 if [ "$1" = "--build-only" ]; then
@@ -24,7 +24,8 @@ fi
 docker run \
 --rm \
 --interactive \
+--user="$(id -u):$(id -g)" \
 --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
 --workdir="${CONTAINER_WORKSPACE}" \
---name=${CONTAINER_NAME} \
-${IMAGE_FULLNAME}
+--name="${CONTAINER_NAME}" \
+"${IMAGE_FULLNAME}"

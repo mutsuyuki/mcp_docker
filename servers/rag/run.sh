@@ -7,7 +7,7 @@ CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
-# .env のパスを特定
+# Locate .env file
 ENV_FILE="${SCRIPT_DIR}/../../.env"
 
 if [ ! -f "${ENV_FILE}" ]; then
@@ -16,20 +16,19 @@ if [ ! -f "${ENV_FILE}" ]; then
     exit 1
 fi
 
-# build 
+# build
 docker build \
---file $(dirname $0)/Dockerfile \
+--file "${SCRIPT_DIR}/Dockerfile" \
 --progress=plain \
---tag  ${IMAGE_FULLNAME} \
-${SCRIPT_DIR}
+--tag "${IMAGE_FULLNAME}" \
+"${SCRIPT_DIR}"
 
 if [ "$1" = "--build-only" ]; then
     echo "Build finished. Exiting without running the container."
     exit 0
 fi
 
-# DB保存先の確保
-echo "🔧 Setting up RAG database directory at ${HOST_WORKSPACE}/rag_db..."
+# Prepare RAG database directory
 mkdir -p "${HOST_WORKSPACE}/rag_db"
 chmod -R 755 "${HOST_WORKSPACE}/rag_db"
 
@@ -41,5 +40,5 @@ docker run \
 --env-file "${ENV_FILE}" \
 --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
 --workdir="${CONTAINER_WORKSPACE}" \
---name=${CONTAINER_NAME} \
-${IMAGE_FULLNAME}
+--name="${CONTAINER_NAME}" \
+"${IMAGE_FULLNAME}"
