@@ -1,1 +1,0 @@
-FROM dockurr/windows:latest
