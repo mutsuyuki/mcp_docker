@@ -10,7 +10,7 @@ This is a Docker-based MCP (Model Context Protocol) server infrastructure. It pr
 
 ### Layer structure
 
-1. **Base image** (`base/Dockerfile`) - Ubuntu 24.04 + CUDA, Python 3.12, Node 22, Docker CLI, Japanese locale
+1. **Base image** (`base/Dockerfile`) - Ubuntu 24.04, Python 3.12, Node 22, Docker CLI, Japanese locale
 2. **MCP servers** (`servers/<name>/`) - Each server is a standalone Docker container built on `mcp_base:latest`. Each has its own `Dockerfile` and `run.sh`.
 3. **Client image** (`clients/Dockerfile`) - Installs AI CLI tools (claude-code, gemini-cli, codex) on top of the base image
 4. **Entry point** (`run.sh`) - Builds client image, starts the container with Docker socket, GPU passthrough, X11 forwarding, and mounts
@@ -49,6 +49,10 @@ bash servers/<name>/run.sh
 - API keys and secrets go in `.env` at project root (required by the RAG server, loaded by `run.sh`)
 - GPU support is auto-detected (NVIDIA or AMD) in `run.sh`
 - The container runs with `--net=host` and `--privileged`, with Docker socket mounted for Docker-in-Docker MCP server management
+
+## MCP Tips
+
+Before using an MCP server, check if `servers/<name>/TIPS.md` exists and read it for known pitfalls.
 
 ## Language
 
