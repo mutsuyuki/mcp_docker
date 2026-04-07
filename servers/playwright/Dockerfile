@@ -11,4 +11,6 @@ RUN npx -y playwright-core install-deps chromium && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+COPY config.json /etc/playwright-mcp/config.json
+
 ENTRYPOINT ["playwright-mcp"]

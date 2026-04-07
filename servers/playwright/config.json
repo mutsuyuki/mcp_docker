@@ -1,0 +1,12 @@
+{
+  "browser": {
+    "launchOptions": {
+      "args": [
+        "--disable-gpu",
+        "--disable-gpu-compositing",
+        "--disable-software-rasterizer",
+        "--in-process-gpu"
+      ]
+    }
+  }
+}

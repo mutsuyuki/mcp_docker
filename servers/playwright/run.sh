@@ -10,7 +10,6 @@ CONTAINER_WORKSPACE="/workspace"
 # build
 docker build \
 --file "${SCRIPT_DIR}/Dockerfile" \
---progress=plain \
 --tag "${IMAGE_FULLNAME}" \
 "${SCRIPT_DIR}"
 
@@ -54,6 +53,6 @@ fi
 docker run "${DOCKER_RUN_OPTS[@]}" "${IMAGE_FULLNAME}" \
     --browser chromium \
     --no-sandbox \
-    --headless \
+    --config /etc/playwright-mcp/config.json \
     --output-dir "${CONTAINER_WORKSPACE}/playwright-mcp" \
     "$@"
