@@ -77,12 +77,10 @@ if [ "${HOST_OS_TYPE}" = "Linux" ]; then
     fi
 fi
 
-# Conditionally mount files (X11 / audio etc.)
-if [ -e "/tmp/.X11-unix" ]; then
-    DOCKER_RUN_OPTS+=(
-        --mount="type=bind,src=/tmp/.X11-unix,dst=/tmp/.X11-unix,readonly"
-    )
-fi
+# Share /tmp with host (for X11 socket and MCP screenshot exchange)
+DOCKER_RUN_OPTS+=(
+    --mount="type=bind,src=/tmp,dst=/tmp"
+)
 if [ -e "/run/dbus/system_bus_socket" ]; then
     DOCKER_RUN_OPTS+=(
         --mount="type=bind,src=/run/dbus/system_bus_socket,dst=/run/dbus/system_bus_socket"

@@ -23,18 +23,16 @@ fi
 # allow display connection for GUI
 if command -v xhost >/dev/null 2>&1; then xhost +; fi
 
-# run with GUI support
+# run with GUI support (headed mode)
 DOCKER_RUN_OPTS=(
     --rm
     --interactive
     --user="$(id -u):$(id -g)"
     --shm-size="2g"
-    --env="DOCKER_CONTAINER=true"
-    --env="QT_X11_NO_MITSHM=1"
+    --env="PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers"
     --env="DISPLAY=${DISPLAY}"
     --env="WAYLAND_DISPLAY=${WAYLAND_DISPLAY}"
     --env="XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}"
-    --env="PULSE_SERVER=${PULSE_SERVER}"
     --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}"
     --workdir="${CONTAINER_WORKSPACE}"
     --name="${CONTAINER_NAME}"
@@ -52,4 +50,10 @@ if [ -e "/run/dbus/system_bus_socket" ]; then
     )
 fi
 
-docker run "${DOCKER_RUN_OPTS[@]}" "${IMAGE_FULLNAME}"
+# Pass additional args (e.g. --headless, --cdp-endpoint) to playwright-mcp
+docker run "${DOCKER_RUN_OPTS[@]}" "${IMAGE_FULLNAME}" \
+    --browser chromium \
+    --no-sandbox \
+    --headless \
+    --output-dir "${CONTAINER_WORKSPACE}/playwright-mcp" \
+    "$@"

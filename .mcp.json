@@ -21,10 +21,10 @@
       ],
       "env": {}
     },
-    "puppeteer": {
+    "playwright": {
       "command": "bash",
       "args": [
-        "servers/puppeteer/run.sh"
+        "servers/playwright/run.sh"
       ],
       "env": {}
     },

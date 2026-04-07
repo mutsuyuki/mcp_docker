@@ -20,7 +20,7 @@ This is a Docker-based MCP (Model Context Protocol) server infrastructure. It pr
 Each server lives in `servers/<name>/` with a `Dockerfile` and `run.sh` that follows a consistent pattern:
 - Build: `bash servers/<name>/run.sh --build-only`
 - Run: `bash servers/<name>/run.sh` (builds + runs the container)
-- Servers: blender, fetch, filesystem, puppeteer, sqlite, sqlite_cleaner, excel, word, rag, unity
+- Servers: blender, fetch, filesystem, playwright, sqlite, sqlite_cleaner, excel, word, rag, unity
 
 Server registration is in `.mcp.json` (shared by Claude Code and synced to Gemini's `.gemini/settings.json` by `run.sh`).
 
@@ -56,4 +56,4 @@ Before using an MCP server, check if `servers/<name>/TIPS.md` exists and read it
 
 ## Language
 
-The primary user communicates in Japanese. Comments in shell scripts and configuration are in Japanese.
+The primary user communicates in Japanese. Comments in shell scripts and configuration are in English.

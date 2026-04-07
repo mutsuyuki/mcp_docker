@@ -25,21 +25,7 @@ MCPツール（RAG, FileSystem, Blenderなど）を使用してファイルに�
 -   **指示**: 「`test.txt` をワークスペースに作成して。」
 -   **解釈**: ファイルパスを `test.txt` として作成ツールを呼び出す。
 
-## Puppeteer利用時の注意点
+## Playwright利用時の注意点
 
-Puppeteer を利用してブラウザを起動する際に、デフォルトの設定でエラーが発生します。
-これをさけるため、以下の様に `allowDangerous` を `True` に設定し、`launchOptions` に `"--no-sandbox"` と `"--disable-setuid-sandbox"` を追加して実行してください。
-また、ウィンドウサイズとコンテンツサイズを合わせるため、"defaultViewport": None の設定を追加して実行してください。
-
-```python
-print(default_api.puppeteer_navigate(
-    url="<URL>",
-    allowDangerous=True,
-    launchOptions={
-        "args": [
-            "--no-sandbox",
-            "--disable-setuid-sandbox"
-        ],
-        "defaultViewport": None
-    }
-))
+ブラウザ操作には `@playwright/mcp` を使用しています。
+`--no-sandbox` は `run.sh` で自動付与されるため、追加設定は不要です。

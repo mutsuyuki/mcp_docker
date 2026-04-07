@@ -30,6 +30,7 @@ docker run \
 --net=host \
 --user="$(id -u):$(id -g)" \
 --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
+--mount="type=bind,src=/tmp,dst=/tmp" \
 --workdir="${CONTAINER_WORKSPACE}" \
 --name="${CONTAINER_NAME}" \
 "${IMAGE_FULLNAME}"
