@@ -24,7 +24,6 @@ fi
 docker run \
 --rm \
 --interactive \
---user="$(id -u):$(id -g)" \
 --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
 --workdir="${CONTAINER_WORKSPACE}" \
 --name="${CONTAINER_NAME}" \

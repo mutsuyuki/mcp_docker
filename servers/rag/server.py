@@ -21,7 +21,7 @@ WORKSPACE_BASE = "."
 PERSIST_DIRECTORY = os.path.join(WORKSPACE_BASE, "rag_db")
 
 # Gemini Embeddingモデル
-EMBEDDING_MODEL = "models/text-embedding-004"
+EMBEDDING_MODEL = "models/gemini-embedding-001"
 
 # ---------------------------------------------------------
 # MCPサーバー初期化

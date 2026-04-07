@@ -29,6 +29,7 @@ DOCKER_RUN_OPTS=(
     --interactive
     --user="$(id -u):$(id -g)"
     --shm-size="2g"
+    --env="DOCKER_CONTAINER=true"
     --env="QT_X11_NO_MITSHM=1"
     --env="DISPLAY=${DISPLAY}"
     --env="WAYLAND_DISPLAY=${WAYLAND_DISPLAY}"
