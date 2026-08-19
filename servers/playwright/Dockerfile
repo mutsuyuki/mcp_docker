@@ -3,10 +3,10 @@ FROM node:22-bookworm-slim
 # Install @playwright/mcp globally
 RUN npm install -g @playwright/mcp@0.0.79
 
-# Install system dependencies and browser to a shared location
+# Install the browser revision required by this exact MCP release.
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers
-RUN npx -y playwright-core install-deps chromium && \
-    npx -y playwright-core install --no-shell chromium && \
+RUN node /usr/local/lib/node_modules/@playwright/mcp/node_modules/playwright/cli.js install-deps chromium && \
+    node /usr/local/lib/node_modules/@playwright/mcp/node_modules/playwright/cli.js install chromium && \
     chmod -R 777 ${PLAYWRIGHT_BROWSERS_PATH} && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
