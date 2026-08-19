@@ -26,6 +26,7 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install -y \
       git \
+      gh \
       wget \
       curl \
       vim \
@@ -35,7 +36,10 @@ RUN apt-get update && \
       tree \
       zip \
       unzip \
-      jq
+      jq \
+      ripgrep \
+      ffmpeg \
+      libnss-mdns
 
 # Japanese environment 
 ENV LANGUAGE=ja_JP.UTF-8
@@ -69,6 +73,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 ARG NODE_VERSION="22"
 RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
     apt-get update && apt-get install -y nodejs
+ENV NODE_PATH=/usr/lib/node_modules
 
 # Install docker client
 RUN apt-get update && \

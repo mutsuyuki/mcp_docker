@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Docker-based MCP (Model Context Protocol) server infrastructure. It provides MCP servers for AI coding assistants (Claude Code, Gemini CLI, OpenAI Codex) to interact with applications and services that need a persistent integration layer.
+This is a Docker-based MCP (Model Context Protocol) server infrastructure. It provides MCP servers for AI coding assistants (Claude Code, Antigravity CLI, OpenAI Codex) to interact with applications and services that need a persistent integration layer.
 
 ## Architecture
 
@@ -12,7 +12,7 @@ This is a Docker-based MCP (Model Context Protocol) server infrastructure. It pr
 
 1. **Base image** (`base/Dockerfile`) - Ubuntu 24.04, Python 3.12, Node 22, Docker CLI, Japanese locale
 2. **MCP servers** (`servers/<name>/`) - Each server is a standalone Docker container. Some use `mcp_base:latest`; others use purpose-built upstream Python, Node, or MCP images. Each has its own `Dockerfile` and `run.sh`.
-3. **Client image** (`clients/Dockerfile`) - Installs AI CLI tools (claude-code, gemini-cli, codex) on top of the base image
+3. **Client image** (`clients/Dockerfile`) - Installs AI CLI tools (`claude`, `agy`, `codex`) on top of the base image
 4. **Entry point** (`run.sh`) - Builds client image, starts the container with Docker socket, GPU passthrough, X11 forwarding, and mounts
 
 ### MCP servers
@@ -23,7 +23,7 @@ Each server lives in `servers/<name>/` with a `Dockerfile` and `run.sh` that fol
 - Servers: blender, playwright, rag, unity
 - Remote server: Figma (`https://mcp.figma.com/mcp`)
 
-Server registration is in `.mcp.json` (shared by Claude Code and synced to Gemini's `.gemini/settings.json` by `run.sh`).
+Server registration is in `.mcp.json` (shared by Claude Code and synced to the Google client settings in `.gemini/settings.json` by `run.sh`).
 
 ### Workspace path convention
 
