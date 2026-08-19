@@ -1,23 +1,21 @@
-# base image build 
+#!/bin/bash
+set -Eeuo pipefail
+
+PROJECT_ROOT="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
+
+# base image build
 docker build \
 --progress=plain \
---file base/Dockerfile \
+--file "${PROJECT_ROOT}/base/Dockerfile" \
 --build-arg BASE_IMAGE="ubuntu:24.04" \
 --build-arg TIMEZONE="Asia/Tokyo" \
 --build-arg USERNAME="$(whoami)" \
 --build-arg USER_UID="$(id -u)" \
 --build-arg USER_GID="$(id -g)" \
 --tag  mcp_base:latest \
-.
+"${PROJECT_ROOT}"
 
 # build servers
-bash servers/blender/run.sh --build-only
-bash servers/fetch/run.sh --build-only
-bash servers/filesystem/run.sh --build-only
-bash servers/playwright/run.sh --build-only
-bash servers/sqlite/run.sh --build-only 
-bash servers/sqlite_cleaner/run.sh --build-only
-bash servers/excel/run.sh --build-only
-bash servers/word/run.sh --build-only
-bash servers/rag/run.sh --build-only
-bash servers/unity/run.sh --build-only
+for server in blender fetch filesystem playwright sqlite sqlite_cleaner excel word rag unity; do
+    bash "${PROJECT_ROOT}/servers/${server}/run.sh" --build-only
+done

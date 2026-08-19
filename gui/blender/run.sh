@@ -1,5 +1,4 @@
 #!/bin/bash
-
 HOST_OS_TYPE=$(uname -s)
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
 PROJECT_NAME="$(basename "$SCRIPT_DIR")"
@@ -8,6 +7,14 @@ CONTAINER_NAME="mcp_gui_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
 PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${PROJECT_ROOT}/workspace}"
 CONTAINER_WORKSPACE="/workspace"
+
+XHOST_GRANTED=0
+revoke_x11_access() {
+    if [ "${XHOST_GRANTED}" -eq 1 ]; then
+        xhost -SI:localuser:"$(id -un)" >/dev/null 2>&1 || true
+    fi
+}
+trap revoke_x11_access EXIT INT TERM
 
 # --- 1. Build image ---
 docker build \
@@ -26,7 +33,10 @@ if [ "$1" = "--build-only" ]; then
 fi
 
 # --- 2. Allow X11 display connection ---
-if command -v xhost >/dev/null 2>&1; then xhost +; fi
+if command -v xhost >/dev/null 2>&1; then
+    xhost +SI:localuser:"$(id -un)" >/dev/null
+    XHOST_GRANTED=1
+fi
 
 # --- 3. Build docker run options (common) ---
 DOCKER_RUN_OPTS=(
@@ -94,6 +104,12 @@ fi
 if [ -e "${XDG_RUNTIME_DIR}/pulse" ]; then
     DOCKER_RUN_OPTS+=(
         --mount="type=bind,src=${XDG_RUNTIME_DIR}/pulse,dst=${XDG_RUNTIME_DIR}/pulse"
+    )
+fi
+# mDNS (.local) resolution via host avahi-daemon socket
+if [ -e "/var/run/avahi-daemon/socket" ]; then
+    DOCKER_RUN_OPTS+=(
+        --mount="type=bind,src=/var/run/avahi-daemon/socket,dst=/var/run/avahi-daemon/socket"
     )
 fi
 

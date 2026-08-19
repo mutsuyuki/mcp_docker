@@ -33,7 +33,7 @@ SQLite MCPサーバーは、gemini-cli終了時に他のMCPサーバー（fetch�
 
 ## 役割
 
-- **機能**: 空のMCPサーバー（tools、resources、prompts なし）
+- **機能**: クリーンアップ状態を確認する `status` ツールを持つMCPサーバー
 - **目的**: gemini-cli終了時の確実な終了を利用したクリーンアップ処理
 - **対象**: 残存するSQLiteコンテナの自動停止
 

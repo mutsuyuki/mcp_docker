@@ -1,10 +1,11 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
+PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 PROJECT_NAME="$(basename "$SCRIPT_DIR")"
 IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
 CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
-HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
+HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${PROJECT_ROOT}/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
 # build with username argument
@@ -24,13 +25,22 @@ if [ "$1" = "--build-only" ]; then
 fi
 
 # run with network host for TCP communication
-docker run \
---rm \
---interactive \
---net=host \
---user="$(id -u):$(id -g)" \
---mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}" \
---mount="type=bind,src=/tmp,dst=/tmp" \
---workdir="${CONTAINER_WORKSPACE}" \
---name="${CONTAINER_NAME}" \
-"${IMAGE_FULLNAME}"
+DOCKER_RUN_OPTS=(
+    --rm
+    --interactive
+    --net=host
+    --user="$(id -u):$(id -g)"
+    --mount="type=bind,src=${HOST_WORKSPACE},dst=${CONTAINER_WORKSPACE}"
+    --mount="type=bind,src=/tmp,dst=/tmp"
+    --workdir="${CONTAINER_WORKSPACE}"
+    --name="${CONTAINER_NAME}"
+)
+
+# mDNS (.local) resolution via host avahi-daemon socket
+if [ -e "/var/run/avahi-daemon/socket" ]; then
+    DOCKER_RUN_OPTS+=(
+        --mount="type=bind,src=/var/run/avahi-daemon/socket,dst=/var/run/avahi-daemon/socket"
+    )
+fi
+
+docker run "${DOCKER_RUN_OPTS[@]}" "${IMAGE_FULLNAME}"

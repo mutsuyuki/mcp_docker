@@ -1,47 +1,61 @@
 #!/bin/bash
-
 HOST_OS_TYPE=$(uname -s)
+PROJECT_ROOT="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
 IMAGE_REPOSITORY="mcp_clients"
 IMAGE_TAG="latest"
 IMAGE_FULLNAME="${IMAGE_REPOSITORY}:${IMAGE_TAG}"
 CONTAINER_NAME="${IMAGE_REPOSITORY}_$(date "+%Y_%m%d_%H%M%S")"
 
+XHOST_GRANTED=0
+grant_x11_access() {
+    if command -v xhost >/dev/null 2>&1; then
+        xhost +SI:localuser:"$(id -un)" >/dev/null
+        XHOST_GRANTED=1
+    fi
+}
+revoke_x11_access() {
+    if [ "${XHOST_GRANTED}" -eq 1 ]; then
+        xhost -SI:localuser:"$(id -un)" >/dev/null 2>&1 || true
+    fi
+}
+trap revoke_x11_access EXIT INT TERM
+
 # --- 1. Reuse existing container ---
 EXISTING_CONTAINER=$(docker ps --format "{{.Image}} {{.Names}}" | grep "^${IMAGE_FULLNAME} " | awk '{print $2}' | head -n 1)
 if [ -n "${EXISTING_CONTAINER}" ]; then
     echo "--- Found running container [${EXISTING_CONTAINER}].  ---"
-    if command -v xhost >/dev/null 2>&1; then xhost +; fi
+    grant_x11_access
     docker exec -it "${EXISTING_CONTAINER}" bash
     exit 0
 fi
 
 # --- 2. Build images ---
-bash prepare.sh
+bash "${PROJECT_ROOT}/prepare.sh"
 
 docker build \
     --progress=plain \
-    --file clients/Dockerfile \
+    --file "${PROJECT_ROOT}/clients/Dockerfile" \
     --build-arg USERNAME="$(whoami)" \
     --tag "${IMAGE_FULLNAME}" \
-    .
+    "${PROJECT_ROOT}"
 
 # --- 3. Prepare host directories and files ---
-touch "$(pwd)/.env"
-mkdir -p "$(pwd)/.gemini"
-mkdir -p "$(pwd)/.claude"
-touch "$(pwd)/.claude.json"
-mkdir -p "$(pwd)/.codex"
+touch "${PROJECT_ROOT}/.env"
+mkdir -p "${PROJECT_ROOT}/.gemini"
+mkdir -p "${PROJECT_ROOT}/.claude"
+touch "${PROJECT_ROOT}/.claude.json"
+mkdir -p "${PROJECT_ROOT}/.codex"
 
-if command -v xhost >/dev/null 2>&1; then xhost +; fi
+grant_x11_access
 
 # --- 4. Sync MCP config (.mcp.json -> .gemini/settings.json) ---
-if [ -f "$(pwd)/.mcp.json" ]; then
-    if [ ! -f "$(pwd)/.gemini/settings.json" ]; then
-        echo "{}" > "$(pwd)/.gemini/settings.json"
+if [ -f "${PROJECT_ROOT}/.mcp.json" ]; then
+    if [ ! -f "${PROJECT_ROOT}/.gemini/settings.json" ]; then
+        echo "{}" > "${PROJECT_ROOT}/.gemini/settings.json"
     fi
     # Merge mcpServers from .mcp.json into settings.json
-    jq -s '.[0] * .[1]' "$(pwd)/.gemini/settings.json" "$(pwd)/.mcp.json" > "$(pwd)/.gemini/settings.tmp.json" && \
-    mv "$(pwd)/.gemini/settings.tmp.json" "$(pwd)/.gemini/settings.json"
+    jq -s '.[0] * .[1]' "${PROJECT_ROOT}/.gemini/settings.json" "${PROJECT_ROOT}/.mcp.json" > "${PROJECT_ROOT}/.gemini/settings.tmp.json" && \
+    mv "${PROJECT_ROOT}/.gemini/settings.tmp.json" "${PROJECT_ROOT}/.gemini/settings.json"
 fi
 
 # --- 5. Build docker run options (common) ---
@@ -57,16 +71,15 @@ DOCKER_RUN_OPTS=(
     --env="XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}"
     --env="PULSE_SERVER=${PULSE_SERVER}"
     --env="COLORTERM=truecolor"
-    --env-file="$(pwd)/.env"
+    --env-file="${PROJECT_ROOT}/.env"
     --env="MCP_HOST_HOME=${HOME}"
-    --env="MCP_HOST_WORKSPACE=$(pwd)/workspace"
-    --mount="type=bind,src=$(pwd),dst=${HOME}/share"
-    --mount="type=bind,src=$(pwd)/.gemini,dst=${HOME}/.gemini"
-    --mount="type=bind,src=$(pwd)/.claude,dst=${HOME}/.claude"
-    --mount="type=bind,src=$(pwd)/.claude.json,dst=${HOME}/.claude.json"
-    --mount="type=bind,src=$(pwd)/.codex,dst=${HOME}/.codex"
+    --env="MCP_HOST_WORKSPACE=${PROJECT_ROOT}/workspace"
+    --mount="type=bind,src=${PROJECT_ROOT},dst=${HOME}/share"
+    --mount="type=bind,src=${PROJECT_ROOT}/.gemini,dst=${HOME}/.gemini"
+    --mount="type=bind,src=${PROJECT_ROOT}/.claude,dst=${HOME}/.claude"
+    --mount="type=bind,src=${PROJECT_ROOT}/.claude.json,dst=${HOME}/.claude.json"
+    --mount="type=bind,src=${PROJECT_ROOT}/.codex,dst=${HOME}/.codex"
     --mount="type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock"
-    --privileged
     --workdir="${HOME}/share"
     --name="${CONTAINER_NAME}"
 )

@@ -1,11 +1,19 @@
 #!/bin/bash
-
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
+PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 PROJECT_NAME="$(basename "$SCRIPT_DIR")"
 IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
 CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
-HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-$(pwd)/workspace}"
+HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${PROJECT_ROOT}/workspace}"
 CONTAINER_WORKSPACE="/workspace"
+
+XHOST_GRANTED=0
+revoke_x11_access() {
+    if [ "${XHOST_GRANTED}" -eq 1 ]; then
+        xhost -SI:localuser:"$(id -un)" >/dev/null 2>&1 || true
+    fi
+}
+trap revoke_x11_access EXIT INT TERM
 
 # build
 docker build \
@@ -20,7 +28,10 @@ if [ "$1" = "--build-only" ]; then
 fi
 
 # allow display connection for GUI
-if command -v xhost >/dev/null 2>&1; then xhost +; fi
+if command -v xhost >/dev/null 2>&1; then
+    xhost +SI:localuser:"$(id -un)" >/dev/null
+    XHOST_GRANTED=1
+fi
 
 # run with GUI support (headed mode)
 DOCKER_RUN_OPTS=(
