@@ -49,6 +49,7 @@ bash servers/<name>/run.sh
 
 - API keys and secrets go in `.env` at project root.
 - RAG uses the local CPU model `Qwen/Qwen3-Embedding-0.6B`. Its pinned snapshot is downloaded to `servers/rag/model/` on first RAG startup, not during `prepare.sh`.
+- `PROJECT_ROOT` is the path visible inside the client container. `MCP_HOST_PROJECT_ROOT` is the same repository's path as seen by the Docker host and must be used for bind-mount sources. Server scripts derive the host workspace from it; `MCP_HOST_WORKSPACE` remains available as an override.
 - GPU support is auto-detected (NVIDIA or AMD) in `run.sh`
 - The container runs with `--net=host` and mounts the Docker socket for MCP server management. Host group memberships are forwarded so the unprivileged container user can access required devices and the Docker socket.
 

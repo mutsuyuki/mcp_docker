@@ -74,7 +74,7 @@ DOCKER_RUN_OPTS=(
     --env="COLORTERM=truecolor"
     --env-file="${PROJECT_ROOT}/.env"
     --env="MCP_HOST_HOME=${HOME}"
-    --env="MCP_HOST_WORKSPACE=${PROJECT_ROOT}/workspace"
+    --env="MCP_HOST_PROJECT_ROOT=${PROJECT_ROOT}"
     --mount="type=bind,src=${PROJECT_ROOT},dst=${HOME}/share"
     --mount="type=bind,src=${PROJECT_ROOT}/.gemini,dst=${HOME}/.gemini"
     --mount="type=bind,src=${PROJECT_ROOT}/.claude,dst=${HOME}/.claude"

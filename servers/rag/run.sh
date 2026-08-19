@@ -6,10 +6,16 @@ PROJECT_ROOT="$(cd -- "${SCRIPT_DIR}/../.." && pwd)"
 PROJECT_NAME="$(basename "$SCRIPT_DIR")"
 IMAGE_FULLNAME="mcp_${PROJECT_NAME}:latest"
 CONTAINER_NAME="mcp_${PROJECT_NAME}_$(date "+%Y_%m%d_%H%M%S")"
-HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${PROJECT_ROOT}/workspace}"
+HOST_PROJECT_ROOT="${MCP_HOST_PROJECT_ROOT:-${PROJECT_ROOT}}"
+HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${HOST_PROJECT_ROOT}/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 MODEL_ROOT="${SCRIPT_DIR}/model"
-HOST_MODEL_ROOT="${MCP_HOST_RAG_MODEL:-$(dirname -- "${HOST_WORKSPACE}")/servers/rag/model}"
+if [ -n "${MCP_HOST_PROJECT_ROOT:-}" ]; then
+    HOST_MODEL_ROOT="${MCP_HOST_RAG_MODEL:-${HOST_PROJECT_ROOT}/servers/rag/model}"
+else
+    # Compatibility with client containers started before MCP_HOST_PROJECT_ROOT existed.
+    HOST_MODEL_ROOT="${MCP_HOST_RAG_MODEL:-$(dirname -- "${HOST_WORKSPACE}")/servers/rag/model}"
+fi
 MODEL_NAME="Qwen3-Embedding-0.6B"
 MODEL_DIR="${MODEL_ROOT}/${MODEL_NAME}"
 MODEL_MARKER="${MODEL_DIR}/.model-complete"
