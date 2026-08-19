@@ -28,7 +28,7 @@ docker build \
     "${SCRIPT_DIR}"
 
 # If the first argument is --build-only, exit after building.
-if [ "$1" = "--build-only" ]; then
+if [ "${1:-}" = "--build-only" ]; then
     echo "Build finished. Exiting without running the container."
     exit 0
 fi

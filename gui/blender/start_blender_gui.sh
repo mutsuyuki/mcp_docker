@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 echo "🚀 Starting Blender GUI with MCP addon..."
 
@@ -12,11 +13,13 @@ start_blender_gui() {
     echo "🖼️ Starting Blender with GUI and MCP addon..."
     
     # Start Blender with Python and auto-exec enabled
+    rm -f /tmp/blender_gui_ready
     blender \
+        --online-mode \
         --enable-autoexec \
         --python-use-system-env \
         --factory-startup \
-        --python /home/$(whoami)/setup_blender_mcp.py &
+        --python "/home/$(id -un)/setup_blender_mcp.py" &
     
     BLENDER_PID=$!
     echo "Blender GUI PID: $BLENDER_PID"
@@ -24,7 +27,11 @@ start_blender_gui() {
     # Wait for Blender to be ready
     echo "⏳ Waiting for Blender GUI to initialize..."
     timeout=60
-    while [ $timeout -gt 0 ]; do
+    while [ "$timeout" -gt 0 ]; do
+        if ! kill -0 "$BLENDER_PID" 2>/dev/null; then
+            wait "$BLENDER_PID"
+            return 1
+        fi
         if [ -f "/tmp/blender_gui_ready" ]; then
             echo "✅ Blender GUI is ready!"
             break
@@ -33,7 +40,7 @@ start_blender_gui() {
         timeout=$((timeout-1))
     done
     
-    if [ $timeout -eq 0 ]; then
+    if [ "$timeout" -eq 0 ]; then
         echo "❌ Timeout waiting for Blender GUI"
         return 1
     fi
@@ -41,7 +48,7 @@ start_blender_gui() {
     # Wait for TCP server to be ready
     echo "⏳ Waiting for TCP server on port 9876..."
     timeout=30
-    while [ $timeout -gt 0 ]; do
+    while [ "$timeout" -gt 0 ]; do
         if check_port; then
             echo "✅ TCP server is ready on port 9876!"
             break
@@ -50,7 +57,7 @@ start_blender_gui() {
         timeout=$((timeout-1))
     done
     
-    if [ $timeout -eq 0 ]; then
+    if [ "$timeout" -eq 0 ]; then
         echo "❌ Timeout waiting for TCP server"
         return 1
     fi
@@ -70,7 +77,7 @@ monitor_blender() {
         sleep 10
         
         # Check if Blender is still running
-        if ! kill -0 $BLENDER_PID 2>/dev/null; then
+        if ! kill -0 "$BLENDER_PID" 2>/dev/null; then
             echo "❌ Blender process died"
             exit 1
         fi

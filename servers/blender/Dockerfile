@@ -9,7 +9,7 @@ ARG USER_GID=1000
 RUN apt-get update && \
     apt-get install -y \
       sudo \
-      curl && \
+      git && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -25,14 +25,16 @@ RUN userdel -rf $(getent passwd ${USER_UID} | cut -d: -f1) 2>/dev/null || true &
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 ENV HOME=/home/$USERNAME
-
-# Install uv and blender-mcp
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/home/${USERNAME}/.local/bin:$PATH"
-RUN /home/${USERNAME}/.local/bin/uv tool install blender-mcp
+
+# Install Blender's official MCP server at a reproducible revision.
+ARG BLENDER_MCP_REVISION="4309a39646e644261624bfcd2bca669b343b7621"
+RUN python -m pip install --user --no-cache-dir \
+    "mcp[cli]==1.29.0" \
+    "git+https://projects.blender.org/lab/blender_mcp.git@${BLENDER_MCP_REVISION}#subdirectory=mcp"
 
 ENV USERNAME=${USERNAME}
 WORKDIR /home/${USERNAME}
 
 # Run blender-mcp server
-CMD ["uv", "tool", "run", "blender-mcp"]
+CMD ["blender-mcp"]
