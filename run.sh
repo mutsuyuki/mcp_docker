@@ -94,7 +94,7 @@ if [ "${HOST_OS_TYPE}" = "Linux" ]; then
     done
 
     # Auto-detect GPU
-    if lspci 2>/dev/null | grep -qi "nvidia"; then
+    if command -v nvidia-smi >/dev/null 2>&1 || lspci 2>/dev/null | grep -qi "nvidia"; then
         # NVIDIA GPU
         DOCKER_RUN_OPTS+=(
             --gpus="all" 

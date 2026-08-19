@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 HOST_OS_TYPE=$(uname -s)
 SCRIPT_DIR="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
 PROJECT_NAME="$(basename "$SCRIPT_DIR")"
@@ -19,7 +20,6 @@ trap revoke_x11_access EXIT INT TERM
 # --- 1. Build image ---
 docker build \
     --file "${SCRIPT_DIR}/Dockerfile" \
-    --progress=plain \
     --build-arg USERNAME="$(whoami)" \
     --build-arg USER_UID="$(id -u)" \
     --build-arg USER_GID="$(id -g)" \
@@ -66,7 +66,7 @@ if [ "${HOST_OS_TYPE}" = "Linux" ]; then
     done
 
     # Auto-detect GPU
-    if lspci 2>/dev/null | grep -qi "nvidia"; then
+    if command -v nvidia-smi >/dev/null 2>&1 || lspci 2>/dev/null | grep -qi "nvidia"; then
         # NVIDIA GPU
         DOCKER_RUN_OPTS+=(
             --gpus="all"

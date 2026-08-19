@@ -20,7 +20,7 @@ def configure_blender_opengl():
         
         # レンダリング設定をCPUに変更（GPUが不安定な場合）
         scene = bpy.context.scene
-        scene.render.engine = 'BLENDER_EEVEE'
+        scene.render.engine = 'BLENDER_EEVEE_NEXT'
         
         # ビューポート設定を軽量化
         for screen in bpy.data.screens:
