@@ -7,52 +7,10 @@
       ],
       "env": {}
     },
-    "fetch": {
-      "command": "bash",
-      "args": [
-        "servers/fetch/run.sh"
-      ],
-      "env": {}
-    },
-    "filesystem": {
-      "command": "bash",
-      "args": [
-        "servers/filesystem/run.sh"
-      ],
-      "env": {}
-    },
     "playwright": {
       "command": "bash",
       "args": [
         "servers/playwright/run.sh"
-      ],
-      "env": {}
-    },
-    "sqlite": {
-      "command": "bash",
-      "args": [
-        "servers/sqlite/run.sh"
-      ],
-      "env": {}
-    },
-    "sqlite_cleaner": {
-      "command": "bash",
-      "args": [
-        "servers/sqlite_cleaner/run.sh"
-      ],
-      "env": {}
-    },
-    "excel": {
-      "command": "bash",
-      "args": [
-        "servers/excel/run.sh"
-      ],
-      "env": {}
-    },
-    "word": {
-      "command": "bash",
-      "args": [
-        "servers/word/run.sh"
       ],
       "env": {}
     },

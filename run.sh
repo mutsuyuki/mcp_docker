@@ -53,8 +53,9 @@ if [ -f "${PROJECT_ROOT}/.mcp.json" ]; then
     if [ ! -f "${PROJECT_ROOT}/.gemini/settings.json" ]; then
         echo "{}" > "${PROJECT_ROOT}/.gemini/settings.json"
     fi
-    # Merge mcpServers from .mcp.json into settings.json
-    jq -s '.[0] * .[1]' "${PROJECT_ROOT}/.gemini/settings.json" "${PROJECT_ROOT}/.mcp.json" > "${PROJECT_ROOT}/.gemini/settings.tmp.json" && \
+    # Replace the managed MCP list while preserving unrelated Gemini settings.
+    # A recursive merge would leave servers removed from .mcp.json behind.
+    jq -s '.[0].mcpServers = .[1].mcpServers | .[0]' "${PROJECT_ROOT}/.gemini/settings.json" "${PROJECT_ROOT}/.mcp.json" > "${PROJECT_ROOT}/.gemini/settings.tmp.json" && \
     mv "${PROJECT_ROOT}/.gemini/settings.tmp.json" "${PROJECT_ROOT}/.gemini/settings.json"
 fi
 

@@ -5,7 +5,6 @@ PROJECT_ROOT="$(cd -- "$(dirname -- "$0")" >/dev/null 2>&1 && pwd)"
 
 # base image build
 docker build \
---progress=plain \
 --file "${PROJECT_ROOT}/base/Dockerfile" \
 --build-arg BASE_IMAGE="ubuntu:24.04" \
 --build-arg TIMEZONE="Asia/Tokyo" \
@@ -16,6 +15,6 @@ docker build \
 "${PROJECT_ROOT}"
 
 # build servers
-for server in blender fetch filesystem playwright sqlite sqlite_cleaner excel word rag unity; do
+for server in blender playwright rag unity; do
     bash "${PROJECT_ROOT}/servers/${server}/run.sh" --build-only
 done

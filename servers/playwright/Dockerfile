@@ -1,7 +1,7 @@
 FROM node:22-bookworm-slim
 
 # Install @playwright/mcp globally
-RUN npm install -g @playwright/mcp@latest
+RUN npm install -g @playwright/mcp@0.0.79
 
 # Install system dependencies and browser to a shared location
 ENV PLAYWRIGHT_BROWSERS_PATH=/opt/playwright-browsers

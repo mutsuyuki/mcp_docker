@@ -11,7 +11,6 @@ CONTAINER_WORKSPACE="/workspace"
 # build
 docker build \
 --file "${SCRIPT_DIR}/Dockerfile" \
---progress=plain \
 --tag "${IMAGE_FULLNAME}" \
 "${SCRIPT_DIR}"
 

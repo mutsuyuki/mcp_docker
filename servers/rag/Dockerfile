@@ -1,32 +1,25 @@
 FROM python:3.12-slim
 
-# ビルドツールのインストール
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-# 必要なPythonライブラリのインストール
+# Use the CPU-only PyTorch wheel so this image does not pull CUDA libraries.
 RUN pip install --no-cache-dir \
-    mcp \
-    langchain-google-genai \
-    langchain-chroma \
-    langchain-community \
-    chromadb \
-    pypdf \
-    python-docx \
-    docx2txt \
-    openpyxl \
-    xlrd \
-    pandas \
-    markdown \
-    unstructured \
-    google-generativeai
+      --index-url https://download.pytorch.org/whl/cpu \
+      "torch==2.6.0+cpu" && \
+    pip install --no-cache-dir \
+      "mcp==2.0.0" \
+      "sentence-transformers==6.0.0" \
+      "huggingface-hub==1.28.0" \
+      "langchain-chroma==1.1.0" \
+      "langchain-text-splitters==1.1.2" \
+      "pypdf==6.16.1" \
+      "python-docx==1.2.0" \
+      "openpyxl==3.1.5" \
+      "xlrd==2.0.2"
 
-# サーバーコードを配置
-COPY server.py /app/server.py
+COPY server.py download_model.py /app/
 WORKDIR /app
 
-# エントリーポイント
 CMD ["python", "/app/server.py"]

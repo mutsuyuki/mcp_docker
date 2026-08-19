@@ -9,3 +9,6 @@ workspace/*
 !workspace/.gitkeep
 
 gui/figma/windows/*
+
+servers/rag/model/*
+!servers/rag/model/.gitkeep

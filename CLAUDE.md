@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Docker-based MCP (Model Context Protocol) server infrastructure. It provides containerized MCP servers for AI coding assistants (Claude Code, Gemini CLI, OpenAI Codex) to interact with external tools like Blender, filesystems, databases, browsers, and office documents.
+This is a Docker-based MCP (Model Context Protocol) server infrastructure. It provides MCP servers for AI coding assistants (Claude Code, Gemini CLI, OpenAI Codex) to interact with applications and services that need a persistent integration layer.
 
 ## Architecture
 
@@ -20,13 +20,14 @@ This is a Docker-based MCP (Model Context Protocol) server infrastructure. It pr
 Each server lives in `servers/<name>/` with a `Dockerfile` and `run.sh` that follows a consistent pattern:
 - Build: `bash servers/<name>/run.sh --build-only`
 - Run: `bash servers/<name>/run.sh` (builds + runs the container)
-- Servers: blender, fetch, filesystem, playwright, sqlite, sqlite_cleaner, excel, word, rag, unity
+- Servers: blender, playwright, rag, unity
+- Remote server: Figma (`https://mcp.figma.com/mcp`)
 
 Server registration is in `.mcp.json` (shared by Claude Code and synced to Gemini's `.gemini/settings.json` by `run.sh`).
 
 ### Workspace path convention
 
-MCP servers run inside containers where `/workspace` maps to the host's `workspace/` directory. When using MCP tools (filesystem, RAG, Blender, etc.), always use **relative paths from the workspace root** or filenames only -- never absolute paths.
+MCP servers run inside containers where `/workspace` maps to the host's `workspace/` directory. When using RAG or Blender tools, always use **relative paths from the workspace root** or filenames only -- never absolute paths.
 
 ## Commands
 
@@ -46,7 +47,8 @@ bash servers/<name>/run.sh
 
 ## Environment
 
-- API keys and secrets go in `.env` at project root (required by the RAG server, loaded by `run.sh`)
+- API keys and secrets go in `.env` at project root.
+- RAG uses the local CPU model `Qwen/Qwen3-Embedding-0.6B`. Its pinned snapshot is downloaded to `servers/rag/model/` on first RAG startup, not during `prepare.sh`.
 - GPU support is auto-detected (NVIDIA or AMD) in `run.sh`
 - The container runs with `--net=host` and mounts the Docker socket for MCP server management. Host group memberships are forwarded so the unprivileged container user can access required devices and the Docker socket.
 

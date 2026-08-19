@@ -1,2 +1,0 @@
-FROM mcp/filesystem
-
