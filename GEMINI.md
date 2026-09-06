@@ -28,4 +28,4 @@ MCPツール（RAG, FileSystem, Blenderなど）を使用してファイルに�
 ## Playwright利用時の注意点
 
 ブラウザ操作には `@playwright/mcp` を使用しています。
-`--no-sandbox` は `run.sh` で自動付与されるため、追加設定は不要です。
+`--no-sandbox` は `servers/playwright/run.sh` で自動付与されるため、追加設定は不要です。

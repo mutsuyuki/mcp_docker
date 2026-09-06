@@ -1,11 +1,12 @@
+.env
+
 .gemini/
 .claude/
 .claude.json
 .codex/
+.aws/
 
-.env
-
-workspace/*  
+workspace/*
 !workspace/.gitkeep
 
 gui/figma/windows/*
