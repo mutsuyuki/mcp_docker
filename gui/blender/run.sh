@@ -41,8 +41,6 @@ fi
 
 # --- 3. Build docker run options (common) ---
 DOCKER_RUN_OPTS=(
-    --interactive
-    --tty
     --rm
     --shm-size="2g"
     --net="host"
@@ -58,6 +56,12 @@ DOCKER_RUN_OPTS=(
 )
 
 # --- 4. Conditional options ---
+
+# Attach a console only when one exists. The container never reads stdin, so a
+# headless launch (an agent, nohup, CI) must not ask Docker for a TTY.
+if [ -t 0 ]; then
+    DOCKER_RUN_OPTS+=(--interactive --tty)
+fi
 
 # Linux-specific options (group inheritance, GPU passthrough)
 if [ "${HOST_OS_TYPE}" = "Linux" ]; then
