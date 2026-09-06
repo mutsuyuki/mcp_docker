@@ -52,8 +52,11 @@ if [ ! -f "${MODEL_MARKER}" ]; then
     fi
 fi
 
-# Prepare RAG database directory
-mkdir -p "${HOST_WORKSPACE}/rag_db"
+# Prepare RAG database directory so the bind mount does not create it as root.
+# This script usually runs inside the client container, where HOST_WORKSPACE is a
+# host path that is not visible; the same directory is reachable through the local
+# side of the bind mount.
+mkdir -p "${PROJECT_ROOT}/workspace/rag_db"
 
 # run
 docker run \
