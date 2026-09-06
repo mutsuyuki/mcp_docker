@@ -9,11 +9,11 @@ HOST_PROJECT_ROOT="${MCP_HOST_PROJECT_ROOT:-${PROJECT_ROOT}}"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${HOST_PROJECT_ROOT}/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
-# build
+# Build. Build output goes to stderr: stdout is the MCP stdio channel.
 docker build \
 --file "${SCRIPT_DIR}/Dockerfile" \
 --tag "${IMAGE_FULLNAME}" \
-"${SCRIPT_DIR}"
+"${SCRIPT_DIR}" >&2
 
 # If the first argument is --build-only, exit after building.
 if [ "$1" = "--build-only" ]; then
@@ -21,9 +21,9 @@ if [ "$1" = "--build-only" ]; then
     exit 0
 fi
 
-# Check if MCP_HOST_HOME is provided by the main run.sh
+# Check if MCP_HOST_HOME is provided by the main DockerRun.sh
 if [ -z "$MCP_HOST_HOME" ]; then
-    echo "❌ Error: MCP_HOST_HOME is not set. Please check the main run.sh configuration." >&2
+    echo "❌ Error: MCP_HOST_HOME is not set. Please check the main DockerRun.sh configuration." >&2
     exit 1
 fi
 

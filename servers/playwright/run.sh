@@ -16,11 +16,11 @@ revoke_x11_access() {
 }
 trap revoke_x11_access EXIT INT TERM
 
-# build
+# Build. Build output goes to stderr: stdout is the MCP stdio channel.
 docker build \
 --file "${SCRIPT_DIR}/Dockerfile" \
 --tag "${IMAGE_FULLNAME}" \
-"${SCRIPT_DIR}"
+"${SCRIPT_DIR}" >&2
 
 # If the first argument is --build-only, exit after building.
 if [ "$1" = "--build-only" ]; then

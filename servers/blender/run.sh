@@ -10,14 +10,14 @@ HOST_PROJECT_ROOT="${MCP_HOST_PROJECT_ROOT:-${PROJECT_ROOT}}"
 HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${HOST_PROJECT_ROOT}/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
-# build with username argument
+# Build with username argument. Build output goes to stderr: stdout is the MCP stdio channel.
 docker build \
 --file "${SCRIPT_DIR}/Dockerfile" \
 --build-arg USERNAME="$(whoami)" \
 --build-arg USER_UID="$(id -u)" \
 --build-arg USER_GID="$(id -g)" \
 --tag "${IMAGE_FULLNAME}" \
-"${SCRIPT_DIR}"
+"${SCRIPT_DIR}" >&2
 
 # If the first argument is --build-only, exit after building.
 if [ "${1:-}" = "--build-only" ]; then

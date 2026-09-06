@@ -20,11 +20,11 @@ MODEL_NAME="Qwen3-Embedding-0.6B"
 MODEL_DIR="${MODEL_ROOT}/${MODEL_NAME}"
 MODEL_MARKER="${MODEL_DIR}/.model-complete"
 
-# build
+# Build. Build output goes to stderr: stdout is the MCP stdio channel.
 docker build \
 --file "${SCRIPT_DIR}/Dockerfile" \
 --tag "${IMAGE_FULLNAME}" \
-"${SCRIPT_DIR}"
+"${SCRIPT_DIR}" >&2
 
 if [ "${1:-}" = "--build-only" ]; then
     echo "Build finished. Exiting without running the container."
@@ -48,7 +48,7 @@ if [ ! -f "${MODEL_MARKER}" ]; then
             --env="HF_HOME=/models/.cache" \
             --mount="type=bind,src=${HOST_MODEL_ROOT},dst=/models" \
             "${IMAGE_FULLNAME}" \
-            python /app/download_model.py
+            python /app/download_model.py >&2
     fi
 fi
 
