@@ -10,8 +10,13 @@ HOST_WORKSPACE="${MCP_HOST_WORKSPACE:-${HOST_PROJECT_ROOT}/workspace}"
 CONTAINER_WORKSPACE="/workspace"
 
 # Build. Build output goes to stderr: stdout is the MCP stdio channel.
+# The user must match the host's so that $HOME resolves to the same path the
+# relay's bridge files are mounted under.
 docker build \
 --file "${SCRIPT_DIR}/Dockerfile" \
+--build-arg USERNAME="$(whoami)" \
+--build-arg USER_UID="$(id -u)" \
+--build-arg USER_GID="$(id -g)" \
 --tag "${IMAGE_FULLNAME}" \
 "${SCRIPT_DIR}" >&2
 
