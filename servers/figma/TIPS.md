@@ -5,6 +5,7 @@
 - リモートHTTP接続（`.mcp.json` に `type: "http"` + `url` で設定）
 - 初回は OAuth 認証が必要。`mcp__figma__authenticate` ツールで URL を取得しブラウザで認証する
 - `.mcp.json` では `"type": "http"` を省略するとスキーマエラーで全MCPサーバーが接続不能になる
+- Codex は `codex mcp login figma` で認証する（`sync_mcp_config.sh` が `.codex/config.toml` に `url` を生成済み）。agy は初回接続時に OAuth（動的クライアント登録）が走る
 
 ## use_figma（Plugin API）のハマりどころ
 
