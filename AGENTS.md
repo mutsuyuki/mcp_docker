@@ -1,9 +1,12 @@
 # AGENTS.md
 
 Project instructions for the AI coding agents used here. Each agent looks for a
-different filename, so this file is the only real one and the others are symlinks
-to it: Claude Code reads `CLAUDE.md`, Codex and Antigravity CLI (`agy`) read
-`AGENTS.md`. Edit this file; never replace a symlink with a copy.
+different filename, so this file is the only real one and `CLAUDE.md` and
+`GEMINI.md` are symlinks to it: Claude Code reads `CLAUDE.md`, Codex reads
+`AGENTS.md`, and Antigravity CLI (`agy`) reads either `AGENTS.md` or `GEMINI.md`
+(the second is kept as a cheap hedge, since only its global counterpart
+`~/.gemini/GEMINI.md` is documented). Edit this file; never replace a symlink
+with a copy.
 
 ## Project Overview
 
